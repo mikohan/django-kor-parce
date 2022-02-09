@@ -2,7 +2,7 @@
 
 
 
-local_settings
+local_settings.py
 *.log
 *.pot
 *.pyc
