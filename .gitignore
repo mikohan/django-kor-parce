@@ -1,4 +1,8 @@
 # Django #
+
+
+
+local_settings
 *.log
 *.pot
 *.pyc
