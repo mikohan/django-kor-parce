@@ -36,6 +36,8 @@ class Parser:
 class ParserView(View):
     def get(self, request):
 
+        Fedor.objects.all().delete()
+
         with open(os.path.join(settings.BASE_DIR, "data", "price.csv")) as file:
             """
             row[0] title
@@ -43,19 +45,36 @@ class ParserView(View):
             roe[6] pageUrl
             """
             reader = csv.reader(file, delimiter=";")
-            for row in reader:
-                print(row[0], row[3], row[6])
+            i = 0
+            for j, row in enumerate(reader):
+                try:
+                    url = row[6]
+                    parser = Parser(url)
+                    string = parser.parse()
+                    spec = string.find("div", {"id": "specs"})  # type: ignore
+                    description = spec.get_text().strip()  # type: ignore
+                    img = string.find("img", {"class": "product-single__photo"})  # type: ignore
+                    img["src"] = "http://www.master12volt.ru" + img["src"]  # type: ignore
+                    print(img["src"])  # type: ignore
+                    price = float(row[3].replace(",", "").replace("р", "").rstrip("."))
+                    product = Fedor(
+                        productUrl=url,
+                        title=row[0],
+                        imgUrl=img["src"],  # type: ignore
+                        description=description,
+                        price=price,
+                        brand=None,
+                    )
+                    product.save()
+                except Exception as e:
+                    i += 1
+                    print("Fucked up", e)
+                # if j > 15:
+                #     break
 
-        parser = Parser("http://www.master12volt.ru/products/avtosignalizatsii/3297/")
-        string = parser.parse()
-        spec = string.find("div", {"id": "specs"})  # type: ignore
-        description = spec.get_text()  # type: ignore
-
-        img = string.find("img", {"class": "product-single__photo"})  # type: ignore
-        img["src"] = "http://www.master12volt.ru" + img["src"]  # type: ignore
         # print(img["src"])  # type: ignore
 
-        return HttpResponse(spec)
+        return HttpResponse(f"<h1>Parsing result {i}</h1>")
 
 
 # Create your views here.
