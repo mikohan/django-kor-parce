@@ -1,0 +1,11 @@
+version: '1'
+
+services:
+  backend:
+    build:
+      context: ./KorScrap
+    command: gunicorn KorScrap.wsgi --bind 0.0.0.0:8000
+    ports:
+      - "8000:8000"
+
+
