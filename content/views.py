@@ -10,6 +10,8 @@ import requests, csv, os
 from django.conf import settings
 from .models import News
 import datetime
+from django.db.models.functions import TruncMonth, TruncDay
+from django.db.models import Count
 
 
 from .forms import NameForm
@@ -66,11 +68,22 @@ class BlogListView(View):
     template_name = "test.html"
 
     def get(self, request, *args, **kwargs):
+
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
-        date = kwargs.get("date") or yesterday.strftime("%Y%m%d")
-        date = datetime.datetime.strptime(date, "%Y%m%d").date()
-        queryset = News.objects.filter(postDate=date)
-        return render(request, self.template_name, {"news": queryset})
+        get_date = request.GET.get("date") or yesterday.strftime("%m/%d/%Y")
+        my_date = datetime.datetime.strptime(get_date, "%m/%d/%Y").date()
+        print("MY DATE IS", my_date)
+
+        # date = kwargs.get("date") or yesterday.strftime("%Y%m%d")
+        # date = datetime.datetime.strptime(date, "%Y%m%d").date()
+        queryset = News.objects.filter(postDate=str(my_date))
+        qs = (
+            News.objects.annotate(month=TruncMonth("postDate"))
+            .values("month")
+            .annotate(count=Count("title"))
+        )
+        days = [{"date": x["month"].strftime("%B %Y"), "count": x["count"]} for x in qs]
+        return render(request, self.template_name, {"news": queryset, "days": days})
 
 
 class PostView(View):
@@ -84,5 +97,12 @@ class PostView(View):
     def get(self, request, *args, **kwargs):
         pk = kwargs.get("pk")
 
+        qs = (
+            News.objects.annotate(month=TruncMonth("postDate"))
+            .values("month")
+            .annotate(count=Count("title"))
+        )
+        days = [{"date": x["month"].strftime("%B %Y"), "count": x["count"]} for x in qs]
+
         post = News.objects.get(newsId=pk)
-        return render(request, self.template_name, {"post": post})
+        return render(request, self.template_name, {"post": post, "days": days})
