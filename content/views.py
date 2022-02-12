@@ -76,7 +76,6 @@ class BlogListView(View):
             get_date = "02/10/2022"  # yesterday.strftime("%m/%d/%Y")
 
         my_date = datetime.datetime.strptime(get_date, "%m/%d/%Y").date()
-        print("MY DATE IS", my_date)
 
         queryset = News.objects.filter(postDate=str(my_date))
         qs = (
@@ -92,7 +91,16 @@ class BlogListView(View):
             }
             for x in qs
         ]
-        return render(request, self.template_name, {"news": queryset, "days": days})
+        earliest = News.objects.all().earliest("postDate")
+        latest = News.objects.all().latest("postDate")
+        e = earliest.postDate.strftime("%m/%d/%Y")
+        l = latest.postDate.strftime("%m/%d/%Y")
+
+        return render(
+            request,
+            self.template_name,
+            {"news": queryset, "days": days, "earliest": e, "latest": l},
+        )
 
 
 class PostView(View):
