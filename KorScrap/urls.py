@@ -21,7 +21,7 @@ from django.conf.urls.static import static  # type: ignore
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("home/", include("content.urls")),
+    path("", include("content.urls")),
     path("fedor/", include("fedor.urls")),
 ]
 
