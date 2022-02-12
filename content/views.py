@@ -69,8 +69,9 @@ class BlogListView(View):
 
     def get(self, request, *args, **kwargs):
 
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
-        get_date = request.GET.get("date") or yesterday.strftime("%m/%d/%Y")
+        # yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        get_date = request.GET.get("date", datetime.datetime.date(2022, 02, 10) ) # yesterday.strftime("%m/%d/%Y")
+
         my_date = datetime.datetime.strptime(get_date, "%m/%d/%Y").date()
         print("MY DATE IS", my_date)
 
