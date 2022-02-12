@@ -70,13 +70,14 @@ class BlogListView(View):
     def get(self, request, *args, **kwargs):
 
         # yesterday = datetime.date.today() - datetime.timedelta(days=1)
-        get_date = request.GET.get("date", datetime.datetime.date(2022, 02, 10) ) # yesterday.strftime("%m/%d/%Y")
+        get_date = request.GET.get("date")
+
+        if not get_date:
+            get_date = "02/10/2022"  # yesterday.strftime("%m/%d/%Y")
 
         my_date = datetime.datetime.strptime(get_date, "%m/%d/%Y").date()
         print("MY DATE IS", my_date)
 
-        # date = kwargs.get("date") or yesterday.strftime("%Y%m%d")
-        # date = datetime.datetime.strptime(date, "%Y%m%d").date()
         queryset = News.objects.filter(postDate=str(my_date))
         qs = (
             News.objects.annotate(month=TruncMonth("postDate"))
