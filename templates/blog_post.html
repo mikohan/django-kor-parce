@@ -76,7 +76,7 @@ New title from template
           <h4 class="fst-italic">Archives</h4>
           <ol class="list-unstyled mb-0">
             {% for day in days %}
-            <li><a href="#">{{day.date}}</a><small> ({{day.count}})</small></li>
+            <li><a href="/?date={{ day.date_link }}">{{day.date}}</a><small> ({{day.count}})</small></li>
             {% endfor %}
           </ol>
           </ol>
