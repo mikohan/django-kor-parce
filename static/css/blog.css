@@ -104,10 +104,10 @@ h3{
 .blog-footer p:last-child {
   margin-bottom: 0;
 }
-img {
-  width: 100%;
-  height: auto;
-}
+/* img { */
+/*   width: 100%; */
+/*   height: auto; */
+/* } */
 .card-text {
   font-size: 0.9rem;
 }
