@@ -114,3 +114,7 @@ h3{
 .card-text span {
   font-size: 0.8rem;
 }
+.mweb_img img {
+  width: 100%;
+  height: auto;
+}
