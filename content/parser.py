@@ -8,6 +8,8 @@ import wget
 from django.core.files import File
 import datetime
 import progressbar
+import threading
+from django.core.paginator import Paginator
 
 
 def date_ranges(start, end=None):
@@ -146,3 +148,31 @@ def parse_pann(start, end):
 
                 bar.update(k)
                 k += 1
+
+
+def parse_comments(page):
+    posts = page.object_list
+    with progressbar.ProgressBar(max_value=posts.count()) as bar:
+
+        for i, post in enumerate(posts):
+            url = f"https://pann.nate.com/talk/{post.newsId}"
+            post.html = get_html(url)
+            post.save()
+            bar.update(i)
+
+
+def parse():
+    object_list = News.objects.all()
+    paginator = Paginator(
+        object_list, 5000
+    )  # Show 10 objects per page, you can choose any other value
+    num_pages = paginator.num_pages
+    thread_list = []
+    for num_page in range(1, num_pages):
+        page = paginator.get_page(num_page)
+        thread = threading.Thread(target=parse_comments, args=(page,))
+        thread.start()
+    for t in thread_list:
+        t.join()
+
+    print("Done")
