@@ -161,10 +161,21 @@ def parse_comments(page):
             bar.update(i)
 
 
-def parse():
+def parse_single_thread():
+    posts = News.objects.all()
+    with progressbar.ProgressBar(max_value=posts.count()) as bar:
+
+        for i, post in enumerate(posts):
+            url = f"https://pann.nate.com/talk/{post.newsId}"
+            post.html = get_html(url)
+            post.save()
+            bar.update(i)
+
+
+def parse_multi():
     object_list = News.objects.all()
     paginator = Paginator(
-        object_list, 5000
+        object_list, 3000
     )  # Show 10 objects per page, you can choose any other value
     num_pages = paginator.num_pages
     thread_list = []
