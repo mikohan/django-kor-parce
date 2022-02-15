@@ -161,8 +161,8 @@ def parse_comments(page):
             bar.update(i)
 
 
-def parse_single_thread():
-    posts = News.objects.all()
+def parse_single_thread(start_row=0):
+    posts = News.objects.all()[start_row:]
     with progressbar.ProgressBar(max_value=posts.count()) as bar:
 
         for i, post in enumerate(posts):

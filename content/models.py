@@ -15,6 +15,7 @@ class News(models.Model):
     rcm = models.CharField(max_length=255)
     postDate = models.DateField(blank=True, null=True)
     html = models.TextField(blank=True, null=True)
+    updated_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
     def __str__(self):
         return self.title
