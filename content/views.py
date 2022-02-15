@@ -119,7 +119,15 @@ class PostView(View):
             .values("month")
             .annotate(count=Count("title"))
         )
-        days = [{"date": x["month"].strftime("%B %Y"), "count": x["count"]} for x in qs]
+        days = [
+            {
+                "date": x["month"].strftime("%B %Y"),
+                "date_link": x["month"].strftime("%m/01/%Y"),
+                "count": x["count"],
+            }
+            for x in qs
+        ]
+        print(days)
 
         post = News.objects.get(newsId=pk)
         return render(request, self.template_name, {"post": post, "days": days})

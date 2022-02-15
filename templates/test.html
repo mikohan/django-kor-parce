@@ -109,15 +109,7 @@ New title from template
           <p class="mb-0">뉴스를 표시할 날짜를 선택하세요.</p>
         </div>
 
-        <div class="p-4">
-          <h4 class="fst-italic">Archives</h4>
-          <ol class="list-unstyled mb-0">
-
-            {% for day in days %}
-            <li><a href="/?date={{ day.date_link }}">{{day.date}}</a><small> ({{day.count}})</small></li>
-            {% endfor %}
-          </ol>
-        </div>
+        {% include 'side.html' %}
 
         <div class="p-4">
           <h4 class="fst-italic">Elsewhere</h4>
