@@ -127,7 +127,6 @@ class PostView(View):
             }
             for x in qs
         ]
-        print(days)
 
         post = News.objects.get(newsId=pk)
         return render(request, self.template_name, {"post": post, "days": days})
