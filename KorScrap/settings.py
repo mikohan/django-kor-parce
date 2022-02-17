@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 import os
 from .local_settings import *
+import datetime
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -39,11 +40,20 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django_extensions",
+    "django_crontab",
     "livereload",
     "bootstrap5",
     "content",
     "fedor",
 ]
+
+# Making args to a parser
+d = datetime.datetime.now().date()
+td = datetime.timedelta(days=1)
+y = d - td
+arg1 = datetime.datetime.strftime(y, "%Y%m%d")  # type: ignore
+arg2 = datetime.datetime.strftime(d, "%Y%m%d")  # type: ignore
+CRONJOBS = [("20 07 * * *", "content.parser.parse_pann", [arg1, arg2])]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
