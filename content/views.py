@@ -69,11 +69,11 @@ class BlogListView(View):
 
     def get(self, request, *args, **kwargs):
 
-        # yesterday = datetime.date.today() - datetime.timedelta(days=1)
         get_date = request.GET.get("date")
 
         if not get_date:
-            get_date = "02/10/2022"  # yesterday.strftime("%m/%d/%Y")
+            yesterday = datetime.date.today() - datetime.timedelta(days=1)
+            get_date = datetime.datetime.strftime(yesterday, "%m/%d/%Y")  # type: ignore
 
         my_date = datetime.datetime.strptime(get_date, "%m/%d/%Y").date()
 
@@ -82,7 +82,7 @@ class BlogListView(View):
             News.objects.annotate(month=TruncMonth("postDate"))
             .values("month")
             .annotate(count=Count("title"))
-        )
+        ).order_by("-month")
         days = [
             {
                 "date": x["month"].strftime("%B %Y"),
@@ -99,7 +99,13 @@ class BlogListView(View):
         return render(
             request,
             self.template_name,
-            {"news": queryset, "days": days, "earliest": e, "latest": l},
+            {
+                "news": queryset,
+                "days": days,
+                "earliest": e,
+                "latest": l,
+                "yesterday": get_date,
+            },
         )
 
 
@@ -127,6 +133,12 @@ class PostView(View):
             }
             for x in qs
         ]
+        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        get_date = datetime.datetime.strftime(yesterday, "%m/%d/%Y")  # type: ignore
 
         post = News.objects.get(newsId=pk)
-        return render(request, self.template_name, {"post": post, "days": days})
+        return render(
+            request,
+            self.template_name,
+            {"post": post, "days": days, "yesterday": get_date},
+        )

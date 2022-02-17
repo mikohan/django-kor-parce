@@ -54,7 +54,7 @@ New title from template
             <label for="date" class="col-sm-1 col-form-label">날짜</label>
             <div class="col-sm-4">
               <div class="input-group date" id="datepicker">
-                <input type="text" class="form-control form-control-sm" name="date">
+                <input type="text" class="form-control form-control-sm" name="date" value="{{ yesterday }}">
                 <span class="input-group-append">
                   <span class="input-group-text bg-white">
                     <i class="fa fa-calendar"></i>
@@ -62,6 +62,7 @@ New title from template
                 </span>
               </div>
             </div>
+            <label for="date" class="col-sm-1 col-form-label">{{ yesterday }}</label>
           </div>
         </form>
         </div>
@@ -114,6 +115,7 @@ New title from template
         <div class="p-4">
           <h4 class="fst-italic">Elsewhere</h4>
           <ol class="list-unstyled">
+            <li><a href="#">{{ yesterday }}</a></li>
             <li><a href="#">GitHub</a></li>
             <li><a href="#">Twitter</a></li>
             <li><a href="#">Facebook</a></li>
@@ -137,6 +139,7 @@ New title from template
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
 <script type="text/javascript">
   $(function () {
+
       $('#datepicker').datepicker({
           format: 'mm/dd/yyyy',
           startDate: "{{ earliest}}", // '01/01/2021',
