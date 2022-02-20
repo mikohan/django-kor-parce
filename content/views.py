@@ -91,16 +91,21 @@ class BlogListView(View):
             }
             for x in qs
         ]
-        earliest = News.objects.all().earliest("postDate")
-        latest = News.objects.all().latest("postDate")
-        e = earliest.postDate.strftime("%m/%d/%Y")
-        l = latest.postDate.strftime("%m/%d/%Y")
+        try:
+            earliest = News.objects.all().earliest("postDate")
+            latest = News.objects.all().latest("postDate")
+            e = earliest.postDate.strftime("%m/%d/%Y")
+            l = latest.postDate.strftime("%m/%d/%Y")
+        except:
+            e = None
+            l = None
+
 
         return render(
             request,
             self.template_name,
             {
-                "news": queryset,
+                "news": queryset or None,
                 "days": days,
                 "earliest": e,
                 "latest": l,

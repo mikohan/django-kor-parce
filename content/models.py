@@ -19,3 +19,16 @@ class News(models.Model):
 
     def __str__(self):
         return self.title
+
+class Archives(models.Model):
+    """
+    Class for archives count
+
+    """
+
+    month = models.CharField(max_length=255, blank=True, null=True)
+    count = models.IntegerField()
+
+    def __str__(self):
+        return self.month
+
