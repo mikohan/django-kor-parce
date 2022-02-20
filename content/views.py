@@ -12,6 +12,7 @@ from .models import News
 import datetime
 from django.db.models.functions import TruncMonth, TruncDay
 from django.db.models import Count
+from .models import Archives
 
 
 from .forms import NameForm
@@ -78,6 +79,7 @@ class BlogListView(View):
         my_date = datetime.datetime.strptime(get_date, "%m/%d/%Y").date()
 
         queryset = News.objects.filter(postDate=str(my_date))
+
         qs = (
             News.objects.annotate(month=TruncMonth("postDate"))
             .values("month")
@@ -145,5 +147,7 @@ class PostView(View):
         return render(
             request,
             self.template_name,
-            {"post": post, "days": days, "yesterday": get_date},
+            {"post": post,
+                "days": days,
+                "yesterday": get_date},
         )

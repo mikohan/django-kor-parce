@@ -27,6 +27,7 @@ class Archives(models.Model):
     """
 
     month = models.CharField(max_length=255, blank=True, null=True)
+    link = models.CharField(max_length=255, blank=True, null=True)
     count = models.IntegerField()
 
     def __str__(self):
