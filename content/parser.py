@@ -208,6 +208,6 @@ def date_ranges_chunks(start, end=None, chunk_size=30):
     return ret_list
     
 def parse_multi(start, end, chunk_size):
-    proc_n = 50
+    proc_n = 5
     p = Pool(proc_n)
     p.starmap(parse_pann,date_ranges_chunks(start, end, chunk_size))
