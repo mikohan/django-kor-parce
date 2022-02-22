@@ -80,19 +80,19 @@ class BlogListView(View):
 
         queryset = News.objects.filter(postDate=str(my_date))
 
-        # qs = (
-        #     News.objects.annotate(month=TruncMonth("postDate"))
-        #     .values("month")
-        #     .annotate(count=Count("title"))
-        # ).order_by("-month")
-        # days = [
-        #     {
-        #         "date": x["month"].strftime("%B %Y"),
-        #         "date_link": x["month"].strftime("%m/01/%Y"),
-        #         "count": x["count"],
-        #     }
-        #     for x in qs
-        # ]
+        qs = (
+            News.objects.annotate(month=TruncMonth("postDate"))
+            .values("month")
+            .annotate(count=Count("title"))
+        ).order_by("-month")
+        days = [
+            {
+                "date": x["month"].strftime("%B %Y"),
+                "date_link": x["month"].strftime("%m/01/%Y"),
+                "count": x["count"],
+            }
+            for x in qs
+        ]
         try:
             earliest = News.objects.all().earliest("postDate")
             latest = News.objects.all().latest("postDate")
@@ -108,7 +108,7 @@ class BlogListView(View):
             self.template_name,
             {
                 "news": queryset or None,
-                # "days": days,
+                "days": days,
                 "earliest": e,
                 "latest": l,
                 "yesterday": get_date,

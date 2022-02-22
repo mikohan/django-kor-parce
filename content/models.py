@@ -17,6 +17,11 @@ class News(models.Model):
     html = models.TextField(blank=True, null=True)
     updated_at = models.DateTimeField(auto_now_add=True, blank=True, null=True)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['-postDate'])
+        ]
+
     def __str__(self):
         return self.title
 
