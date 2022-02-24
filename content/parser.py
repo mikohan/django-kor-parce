@@ -164,6 +164,91 @@ def parse_pann(start, end):
 
 
 
+def parse_pann_crontab():
+    """
+    Function for crontab parsing
+    """
+    d = datetime.datetime.now().date()
+    td = datetime.timedelta(days=1)
+    y = d - td
+    start = datetime.datetime.strftime(y, "%Y%m%d")  # type: ignore
+    end = datetime.datetime.strftime(d, "%Y%m%d")  # type: ignore
+
+    db.connections.close_all()
+    ranges = date_ranges(start, end)
+    k = 1 
+    with progressbar.ProgressBar(max_value=(len(ranges) - 1)*50) as bar:
+        for j, date_range in enumerate(ranges):
+            
+            url = f"https://pann.nate.com/talk/ranking/d?stdt={date_range}&page=1"
+            parser = Parser(url)
+            ul = parser.parse()
+            for j, li in enumerate(ul.findAll('li')): #type: ignore
+                img = None
+                thumb = li.find('div', class_="thumb")
+                title = li.find('dt').find('a').getText()
+
+                link = li.find('a')['href']
+                postId = link.split('/')[-1]
+                count = li.find('span', class_="count").getText()
+                rcm = li.find('span', class_="rcm").getText()
+                postDate = datetime.datetime.strptime(date_range, '%Y%m%d')
+                #txt
+                txt = ''
+                try:
+                    txt = li.find('dd', class_="txt").find('a').getText()
+                except:
+                    pass
+
+
+                html = get_html(f"https://pann.nate.com/talk/{postId}")
+
+
+                try:            
+                    obj = News.objects.get(newsId=postId)
+
+
+                    obj.title= title
+                    obj.excerpt=txt
+                    obj.href=link
+                    obj.count=count
+                    obj.rcm=rcm
+                    obj.postDate=postDate
+                    obj.html=html
+
+
+                except News.DoesNotExist:
+                    obj = News(
+                        newsId=postId,
+                        title=title,
+                        excerpt=txt,
+                        href=link,
+                        count=count,
+                        rcm=rcm,
+                        postDate=postDate,
+                        html=html
+                    )
+
+                local_filename = '' 
+                try:
+                    img = thumb.find('img')['src']
+                    local_filename = download(img, postId)
+                    with open(local_filename, 'rb') as ff:
+                        obj.tmb.save(f"{postId}.jpg", File(ff), save=True)
+                        
+                except Exception as e:
+                    pass
+                obj.save()
+                try:
+                    os.remove(local_filename)
+                except Exception as e:
+                    pass
+
+                try:
+                    bar.update(k)
+                except:
+                    pass
+                k += 1
 
 def parse_comments(page):
     posts = page.object_list
@@ -208,6 +293,11 @@ def date_ranges_chunks(start, end=None, chunk_size=30):
     return ret_list
     
 def parse_multi(start, end, chunk_size):
-    proc_n = 5
+    proc_n = 20 
     p = Pool(proc_n)
     p.starmap(parse_pann,date_ranges_chunks(start, end, chunk_size))
+
+
+
+
+

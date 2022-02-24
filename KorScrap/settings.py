@@ -49,12 +49,7 @@ INSTALLED_APPS = [
 ]
 
 # Making args to a parser
-d = datetime.datetime.now().date()
-td = datetime.timedelta(days=1)
-y = d - td
-arg1 = datetime.datetime.strftime(y, "%Y%m%d")  # type: ignore
-arg2 = datetime.datetime.strftime(d, "%Y%m%d")  # type: ignore
-CRONJOBS = [("20 07 * * *", "content.parser.parse_pann", [arg1, arg2])]
+CRONJOBS = [("20 07 * * *", "content.parser.parse_pann_crontab" )]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
