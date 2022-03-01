@@ -28,7 +28,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 DEBUG = True
 
 ALLOWED_HOSTS = ["*"]
-CSRF_TRUSTED_ORIGINS = ['http://natepan.tk', 'http://localhost']
+CSRF_TRUSTED_ORIGINS = ['http://natepan.tk', 'http://localhost',
+    'http://167.86.124.103', 'http://boiseriders.net']
 
 
 # ikk Application definition
