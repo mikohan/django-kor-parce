@@ -19,7 +19,8 @@ class News(models.Model):
 
     class Meta:
         indexes = [
-            models.Index(fields=['-postDate'])
+            models.Index(fields=['-postDate', 'newsId']),
+            
         ]
 
     def __str__(self):
